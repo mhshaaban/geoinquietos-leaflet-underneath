@@ -1,6 +1,6 @@
 .reveal .slides section .fragment.highlight-current-green.current-fragment {
     width: 100%;
-    background-color: #00362b;
+    background-color: #00663b;
 }
 
 .map {
@@ -76,4 +76,30 @@
 
 .utfgrid .map {
     height: 400px;   
+}
+
+.reveal .leaflet-popup-content, .reveal .leaflet-popup-content h2 {
+    color: #333;
+}
+
+.map .maki-icon {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+.map ul {
+    list-style: none;
+}
+
+.map li {
+    /*margin-left: -48px;*/
+    margin-bottom: 4px;
+    font-size: 18px;
+}
+
+.leaflet-popup-content pre {
+    font-size: 14px;
+    width: 100%;
+    box-shadow: none;
 }

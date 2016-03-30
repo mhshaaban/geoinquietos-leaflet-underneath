@@ -20,7 +20,11 @@
         <!-- Code syntax highlighting -->
         <link rel="stylesheet" href="lib/css/zenburn.css">
 
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
         <link rel="stylesheet" href="lib/leaflet/leaflet.css">
+
+        <link rel="stylesheet" type="text/css" href="https://www.mapbox.com/maki/www/maki-sprite.css" />
 
         <link rel="stylesheet" href="css/pres.css">
 
@@ -45,6 +49,15 @@
             <div class="slides">
                 <section>
                     <h1><small>Making Tiled Maps Come Alive:</small><br/><em>Leaflet Underneath</em></h1>
+                    <br><br><br><br>
+                    <small style="float:right">
+                        <ul style="list-style: none;">
+                            <li>Per Liedman</li>
+                            <li><i class="fa fa-envelope"></i>&nbsp;<a href="mailto:per.liedman@dotnetmentor.se">per.liedman@dotnetmentor.se</a></li>
+                            <li><i class="fa fa-twitter"></i>&nbsp;<a href="https://twitter.com/liedman/">@liedman</a></li>
+                            <li><i class="fa fa-github"></i>&nbsp;<a href="https://github.com/perliedman/">perliedman</a></li>
+                        </ul>
+                    </small>
                 </section>
                 <section data-state="standard-map">
                     <div id="standard-map" class="map"></div>
@@ -56,7 +69,7 @@
                         with it by clicking etc, but the background map is more or less a dead
                         image.
 
-                        Here's a lot of good example: lots of stores, restaurants etc, but I
+                        Here's a good example: lots of stores, restaurants etc, but I
                         can't know anything about them except for sometimes their names.
 
                         Still, that image is generated from one of the most impressive geographic
@@ -67,14 +80,14 @@
 
                 <section>
                     <pre class="highlight xml">
-  &lt;node id="2699835935" lat="40.4205411" lon="-3.7060451"&gt;
+  &lt;node id="2699835935" <span class="fragment zoom-in highlight-current-green">lat="40.4205411" lon="-3.7060451"</span>&gt;
     &lt;tag k="addr:city" v="Madrid"/&gt;
     &lt;tag k="addr:housenumber" v="46"/&gt;
     &lt;tag k="addr:postcode" v="28013"/&gt;
     &lt;tag k="addr:street" v="Gran Vía"/&gt;
     &lt;tag k="amenity" v="fast_food"/&gt;
     &lt;tag k="cuisine" v="pizza"/&gt;
-    &lt;tag k="name" v="Papizza"/&gt;
+    <span class="fragment zoom-in highlight-current-green">&lt;tag k="name" v="Papizza"/&gt;</span>
     &lt;tag k="website" v="http://www.papizza.es/"/&gt;
   &lt;/node&gt;
                     </pre>
@@ -82,9 +95,9 @@
                         <a href="http://www.openstreetmap.org/api/0.6/node/2699835935">OpenStreetMap node #2699835935</a>
                     </p>
                     <aside class="notes">
-                        For example, here's the data for the restaurant in the centre from OpenStreetMap.
+                        For example, here's the full OpenStreetMap data for one of the restaurants in that map.
                         On the tiled map, what you can see are these parts [highlight name and geometry]
-                        But as you can see, the geographic part is just a part of all the information
+                        But as you can see, these are just a part of all the information
                         actually stored. We have address, opening hours, website and lots of other
                         interesting information.
 
@@ -108,18 +121,21 @@
 
                 <section data-state="zoom-img">
                     <div class="zoom-img-wrapper">
-                        <img id="zoom-img" src="https://api.mapbox.com/v4/mapbox.streets/19/256746/197682.png?access_token=pk.eyJ1IjoibGllZG1hbiIsImEiOiJjaW1kZmh3dXEwMDFldnpra2l2YnM5YjlhIn0.W2R1bDV_tEbuy2iNVIvyvw">
+                        <img id="zoom-img" src="https://api.mapbox.com/v4/mapbox.outdoors/19/256746/197682.png?access_token=pk.eyJ1IjoibGllZG1hbiIsImEiOiJjaW1kZmh3dXEwMDFldnpra2l2YnM5YjlhIn0.W2R1bDV_tEbuy2iNVIvyvw">
                     </div>
 
                     <aside class="notes">
-                        The basic problem: image tiles are raster images. They contain
+                        Tiles are awesome, because they divide the problem of
+                        global map coverage into millions and millions of tiny
+                        images. What's not so awesome is that they are, ehrm, images.
+                        Raster images. They contain
                         colour information, and the only "meaning" in them is the
                         interpretation from our brains, by putting together the pixels.
 
                         There's nothing to extract for further exploration here.
 
-                        So, we need a way to add information, on global scale, which
-                        almost certainly means tiling.
+                        So, we need a way to add information, on global scale, like
+                        tiles, but with some other information that just colour.
                     </aside>
                 </section>
 
@@ -145,6 +161,8 @@
                         Potentially, UTFGrid could be a solution, but it would
                         involve setting up your own UTFGrid tiles, which make
                         it just too much work (for me).
+
+                        Look it up though, it's a simple and fascinating technology!
                     </aside>
                 </section>
 
@@ -191,20 +209,88 @@ out;</pre>
                 <section>
                     <h1>Vector Tiles</h1>
 
+                    <img src="img/vector-tiles-xray.jpg">
+
                     <aside class="notes">
                         Something that <em>does</em> feel 2016 is Vector Tiles.
                         So yeah, let's try vector tiles!
 
                         Compared to UTFGrid, you can get easy access (Mapbox),
                         good tooling if you want to roll your own.
+
+                        So, vector tiles in themselves can contain just about
+                        anything, but looking at Mapbox's "streets" vector tiles,
+                        they contain lots of POIs. Interestingly, they usually
+                        contain much more information than is usually shown
+                        in the end result. Normally this extra information
+                        is used to give the cartographer freedom to choose
+                        the amount of detail to show on the map, but it also
+                        suits us, since we want to be able to access more
+                        information than is shown.
+
+                        Inside, a tile is divided into layers, with different
+                        types of features inside each layer. For example,
+                        Mapbox streets has layer called <code>poi_label</code>,
+                        that sounds interesting.
                     </aside>
                 </section>
 
-                <section>
-                    <h1>Leaflet Underneath</h1>
+                <section data-state="simple-underneath">
+                    <h2>Leaflet Underneath</h2>
+                    <div id="simple-underneath" class="map"></div>
+                    <aside class="notes">
+                        So, lets examine. This is the same map as in my
+                        first example, but when I click it, I load the
+                        <em>vector tile</em> for that location, and
+                        examine the <code>poi_label</code> layer for
+                        nearby features.
 
+                        Good, but there's an apparent limitation:
+                        we can still only see type of feature, and its
+                        name. To save bandwidth, vector tiles leave out
+                        most of OSM's tags.
+                    </aside>
+                </section>
+
+                <section data-state="advanced-underneath">
+                    <h2>Leaflet Underneath</h2>
+                    <div id="advanced-underneath" class="map"></div>
                     <aside class="notes">
                     </aside>
+                </section>
+
+                <section data-state="advanced-underneath">
+                    <h2>Leaflet Underneath</h2>
+                    <a href="https://github.com/perliedman/leaflet-underneath">https://github.com/perliedman/leaflet-underneath</a>
+                    <pre class="highlight js">
+var pois = L.tileLayer.underneath('http://...', {
+        <span class="fragment zoom-in highlight-current-green">layers: ['poi_label']</span>,
+        <span class="fragment zoom-in highlight-current-green">lazy: true,</span>
+        <span class="fragment zoom-in highlight-current-green">zoomIn: 0</span>
+    })
+    .addTo(map);
+
+map.on('click', function(e) {
+<span class="fragment zoom-in highlight-current-green">    pois.query(e.latlng, function(err, results) {
+        ...
+    });</span>
+});</pre>
+                    <aside class="notes">
+                    </aside>
+                </section>
+                <section>
+                    <h1>Thank you!</h1>
+                    <h3>
+                        <a href="http://www.liedman.net/maptime-gbg-201602/">
+                            http://www.liedman.net/maptime-gbg-201602/
+                        </a>
+                    </h3>
+                    <ul style="list-style: none;">
+                        <li>Per Liedman</li>
+                        <li><i class="fa fa-envelope"></i>&nbsp;<a href="mailto:per.liedman@dotnetmentor.se">per.liedman@dotnetmentor.se</a></li>
+                        <li><i class="fa fa-twitter"></i>&nbsp;<a href="https://twitter.com/liedman/">@liedman</a></li>
+                        <li><i class="fa fa-github"></i>&nbsp;<a href="https://github.com/perliedman/">perliedman</a></li>
+                    </ul>
                 </section>
             </div>
         </div>
@@ -225,6 +311,7 @@ out;</pre>
         <script src="js/reveal.js"></script>
         <script src="lib/leaflet/leaflet-src.js"></script>
         <script src="lib/leaflet.utfgrid-src.js"></script>
+        <script src="lib/leaflet-underneath.js"></script>
         <script src="js/pres.js"></script>
 
         <script>
@@ -268,6 +355,8 @@ out;</pre>
             runOnState('standard-map', window.standardMap);
             runOnState('zoom-img', window.zoomImg);
             runOnState('utfgrid', window.utfGrid);
+            runOnState('simple-underneath', window.simpleUnderneath);
+            runOnState('advanced-underneath', window.advancedUnderneath);
         </script>
 
     </body>
