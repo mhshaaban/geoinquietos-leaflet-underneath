@@ -161,21 +161,21 @@ window.advancedUnderneath = (function() {
         fetch('http://www.openstreetmap.org/api/0.6/' + type + '/' + osmId, {
             mode: 'cors'
         }).then(function(response) {
-            response.text().then(function(text) {
-                var data = new window.DOMParser().parseFromString(text, 'text/xml'),
-                    tagTags = data.getElementsByTagName('tag'),
-                    tags = {},
-                    i,
-                    t;
+            return response.text();
+        }).then(function(text) {
+            var data = new window.DOMParser().parseFromString(text, 'text/xml'),
+                tagTags = data.getElementsByTagName('tag'),
+                tags = {},
+                i,
+                t;
 
-                for (i = 0; i < tagTags.length; i++) {
-                    t = tagTags[i];
-                    tags[t.getAttribute('k')] = t.getAttribute('v');
-                }
+            for (i = 0; i < tagTags.length; i++) {
+                t = tagTags[i];
+                tags[t.getAttribute('k')] = t.getAttribute('v');
+            }
 
-                cb(null, tags);
-            });
-        }, function(err) {
+            cb(null, tags);
+        }).catch(function(err) {
             cb(err);
         });
     };

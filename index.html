@@ -58,23 +58,39 @@
                             <li><i class="fa fa-github"></i>&nbsp;<a href="https://github.com/perliedman/">perliedman</a></li>
                         </ul>
                     </small>
+                    <aside class="notes">
+                        <p>
+                        Hi, I'm Per Liedman, and I'm here to talk a bit about
+                        background maps and the wonders of OpenStreetMap.
+                        </p>
+                        <p>What do I mean by "come alive"?</p>
+                    </aside>
                 </section>
                 <section data-state="standard-map">
                     <div id="standard-map" class="map"></div>
 
                     <aside class="notes">
-                        What do I mean by "come alive"?
+                        <p>
+                        I think most of us have grown used to making a sharp distinction
+                        between "background map" and "overlays".
+                        </p>
+                        <p>
                         In a normal tiled map in Leaflet, the background map is static.
                         You can add vector data on top of a tiled map, and you can interact
                         with it by clicking etc, but the background map is more or less a dead
                         image.
+                        </p>
 
+                        <p>
                         Here's a good example: lots of stores, restaurants etc, but I
                         can't know anything about them except for sometimes their names.
+                        </p>
 
+                        <p>
                         Still, that image is generated from one of the most impressive geographic
                         databases we have, the OpenStreetMap database. What is shown in those images
                         is just one side of all the information that is stored in the database. 
+                        </p>
                     </aside>
                 </section>
 
@@ -95,14 +111,20 @@
                         <a href="http://www.openstreetmap.org/api/0.6/node/2699835935">OpenStreetMap node #2699835935</a>
                     </p>
                     <aside class="notes">
+                        <p>
                         For example, here's the full OpenStreetMap data for one of the restaurants in that map.
+                        </p>
+                        <p>
                         On the tiled map, what you can see are these parts [highlight name and geometry]
                         But as you can see, these are just a part of all the information
                         actually stored. We have address, opening hours, website and lots of other
                         interesting information.
+                        </p>
 
+                        <p>
                         When I say making the tiled map "come alive", I mean making those dead, static
                         images explorable, and making this information accessible.
+                        </p>
                     </aside>
                 </section>
 
@@ -110,12 +132,16 @@
                     <h1><a href="https://www.google.se/maps/@40.420537,-3.7066242,19z">Prior Art</a></h1>
 
                     <aside class="notes">
+                        <p>
                         So, I must confess I didn't come up with this idea entirely by myself. 
-                        There's some prior art, let's look at out favourite competitor Google Maps
+                        There's some prior art, let's look at out favourite competitor Google Maps.
+                        </p>
 
+                        <p>
                         As you can see, Google Maps actually shows points of interest on the map
                         more or less as links, you can hover and you can click them. Clicking
                         brings up a lot of information similar to what I showed you before.
+                        </p>
                     </aside>
                 </section>
 
@@ -125,44 +151,23 @@
                     </div>
 
                     <aside class="notes">
-                        Tiles are awesome, because they divide the problem of
+                        <p>
+                        Tiles are awesome for background layers, because they divide the problem of
                         global map coverage into millions and millions of tiny
-                        images. What's not so awesome is that they are, ehrm, images.
+                        images.
+                        </p>
+
+                        <p>
+                        What's not so awesome is that they are, ehrm, images.
                         Raster images. They contain
                         colour information, and the only "meaning" in them is the
-                        interpretation from our brains, by putting together the pixels.
+                        interpretation made by our brains, putting together the pixels.
+                        </p>
 
-                        There's nothing to extract for further exploration here.
-
-                        So, we need a way to add information, on global scale, like
-                        tiles, but with some other information that just colour.
-                    </aside>
-                </section>
-
-                <section id="utfgrid" data-state="utfgrid">
-                    <h1>UTFGrid</h1>
-                    <div id="utfgrid-map" class="map"></div>
-                    <br>
-                    <h3 id="utfgrid-text"></h3>
-                    <aside class="notes">
-                        I feel obliged just to mention UTFGrid, which is a technology
-                        to add interactivity to tiled maps. Its more or less raster
-                        tiles, where the "pixels" are not colour values, but
-                        indexes into an array of features.
-
-                        Since mouse clicks and finger taps are imprecise, UTFGrid
-                        tiles can be lower resolution than raster tiles, saving
-                        bandwidth.
-
-                        UTFGrid seems to have gone out of style, and even though
-                        a lot of tools support it, it's hard to find good UTFGrid
-                        sources for OpenStreetMap data.
-
-                        Potentially, UTFGrid could be a solution, but it would
-                        involve setting up your own UTFGrid tiles, which make
-                        it just too much work (for me).
-
-                        Look it up though, it's a simple and fascinating technology!
+                        <p>
+                        There's nothing to extract for further exploration here,
+                        and we need another data source.
+                        </p>
                     </aside>
                 </section>
 
@@ -195,14 +200,59 @@ out;</pre>
                     </pre>
 
                     <aside class="notes">
-                        I should also mention OpenStreetMap's Overpass API, which is
+                        <p>
+                        My first thought was to use OpenStreetMap's Overpass API, which is
                         a fantastic way to query the OpenStreetMap database.
+                        </p>
 
+                        <p>
                         It's versatile, but perhaps not aimed for quick client interaction.
+                        It's surprisingly fast, but can still take a couple of seconds
+                        to execute a query.
+                        </p>
 
+                        <p>
                         Something about sending an arbitrary query in a specialised query
                         language to a server just doesn't sit right with me, it doesn't
                         feel entirely 2016.
+                        </p>
+                    </aside>
+                </section>
+
+                <section id="utfgrid" data-state="utfgrid">
+                    <h1>UTFGrid</h1>
+                    <div id="utfgrid-map" class="map"></div>
+                    <br>
+                    <h3 id="utfgrid-text"></h3>
+                    <aside class="notes">
+                        <p>
+                        I also thought about using UTFGrid, which is a technology
+                        to add interactivity to tiled maps. Its more or less raster
+                        tiles, where the "pixels" are not colour values, but
+                        indexes into an array of features.
+                        </p>
+
+                        <p>
+                        Since mouse clicks and finger taps are imprecise, UTFGrid
+                        tiles can be lower resolution than raster tiles, saving
+                        bandwidth.
+                        </p>
+
+                        <p>
+                        UTFGrid seems to have gone out of style, and even though
+                        a lot of tools support it, I'm not aware of any UTFGrid
+                        source of POIs with global coverage.
+                        </p>
+
+                        <p>
+                        Potentially, UTFGrid could be a solution, but it would
+                        involve setting up your own UTFGrid tiles, which makes
+                        it just too much work (for me).
+                        </p>
+
+                        <p>
+                        Look it up though if you haven't, it's a simple and fascinating technology!
+                        </p>
                     </aside>
                 </section>
 
@@ -212,26 +262,32 @@ out;</pre>
                     <img src="img/vector-tiles-xray.jpg">
 
                     <aside class="notes">
+                        <p>
                         Something that <em>does</em> feel 2016 is Vector Tiles.
                         So yeah, let's try vector tiles!
+                        </p>
 
+                        <p>
                         Compared to UTFGrid, you can get easy access (Mapbox),
                         good tooling if you want to roll your own.
+                        </p>
 
-                        So, vector tiles in themselves can contain just about
-                        anything, but looking at Mapbox's "streets" vector tiles,
-                        they contain lots of POIs. Interestingly, they usually
-                        contain much more information than is usually shown
-                        in the end result. Normally this extra information
-                        is used to give the cartographer freedom to choose
-                        the amount of detail to show on the map, but it also
-                        suits us, since we want to be able to access more
-                        information than is shown.
+                        <p>
+                        So, vector tiles, like you might have guessed from the
+                        name, contains vector data, but the data is split up
+                        into tiles, just like raster tiles, which makes it
+                        efficient to fetch data for just the area you're
+                        interested in.
+                        </p>
 
-                        Inside, a tile is divided into layers, with different
-                        types of features inside each layer. For example,
-                        Mapbox streets has layer called <code>poi_label</code>,
-                        that sounds interesting.
+                        <p>
+                        As you can see in this messy picture, vector tiles usually
+                        contain a bit more information than you would normally
+                        render on a map. That's to give the cartographer a bit
+                        of freedom in choosing what to render, but it also suits
+                        us well, since we can access more information than is
+                        shown on the map.
+                        </p>
                     </aside>
                 </section>
 
@@ -239,23 +295,11 @@ out;</pre>
                     <h2>Leaflet Underneath</h2>
                     <div id="simple-underneath" class="map"></div>
                     <aside class="notes">
-                        So, lets examine. This is the same map as in my
+                        So, lets examine what vector tiles can do. This is the same map as in my
                         first example, but when I click it, I load the
                         <em>vector tile</em> for that location, and
                         examine the <code>poi_label</code> layer for
                         nearby features.
-
-                        Good, but there's an apparent limitation:
-                        we can still only see type of feature, and its
-                        name. To save bandwidth, vector tiles leave out
-                        most of OSM's tags.
-                    </aside>
-                </section>
-
-                <section data-state="advanced-underneath">
-                    <h2>Leaflet Underneath</h2>
-                    <div id="advanced-underneath" class="map"></div>
-                    <aside class="notes">
                     </aside>
                 </section>
 
@@ -263,7 +307,7 @@ out;</pre>
                     <h2>Leaflet Underneath</h2>
                     <a href="https://github.com/perliedman/leaflet-underneath">https://github.com/perliedman/leaflet-underneath</a>
                     <pre class="highlight js">
-var pois = L.tileLayer.underneath('http://...', {
+var pois = <span class="fragment zoom-in highlight-current-green">L.tileLayer.underneath</span>(<span class="fragment zoom-in highlight-current-green">'http://...'</span>, {
         <span class="fragment zoom-in highlight-current-green">layers: ['poi_label']</span>,
         <span class="fragment zoom-in highlight-current-green">lazy: true,</span>
         <span class="fragment zoom-in highlight-current-green">zoomIn: 0</span>
@@ -276,8 +320,48 @@ map.on('click', function(e) {
     });</span>
 });</pre>
                     <aside class="notes">
+                        <p>
+                        And just to be clear, this plugin is about querying
+                        a location for features in the vicinity. It doesn't
+                        have any UI - the UI is just part of the demo.
+                        So, you can use this plugin for other purposes as well.
+                        </p>
+
+                        ...
+
+                        <p>
+                        Good, but you might have noticed we're only half way there:
+                        we can still only see type of feature, and its
+                        name. To save bandwidth, vector tiles leave out
+                        most of OSM's tags.
+                        </p>
                     </aside>
                 </section>
+
+                <section data-state="advanced-underneath">
+                    <h2>Leaflet Underneath</h2>
+                    <div id="advanced-underneath" class="map"></div>
+                    <aside class="notes">
+                    </aside>
+                </section>
+
+                <section>
+                    <h1>Mission Accomplished<span class="fragment">...?</span></h1>
+                    <aside class="notes">
+                        So, that's about it, right? We've done what we've set out to do.
+                        I'll leave you with some loose ends here:
+                        <UL>
+                            <li>
+                                Interpreting and displaying OSM data is hard,
+                                especially opening hours, and
+                                especially if you require I18N. Please help!
+                            </li>
+                            <li>Leaflet Underneath currently assumes everything is points. Please help!</li>
+                            <li>This is still sort of an experiment. Please help!</li>
+                        </UL>
+                    </aside>
+                </section>
+
                 <section>
                     <h1>Thank you!</h1>
                     <h3>
